@@ -3,18 +3,18 @@ import sys
 import time
 
 
-kfolding=10
+kfolding=5
 n_opt_point = 5 
 n_nodes = kfolding*n_opt_point + 1 ## one for the master
 
-test = True
+test = False
 dir_name = 'Train_%dx%d'% ( kfolding, n_opt_point)
 mpi_script = 'mpi_ijet_%dx%d.pbs'%( kfolding, n_opt_point)
 mpi_file = open(mpi_script,'w')
 mpi_file.write("""#!/bin/bash
 #    Begin PBS directives
 #PBS -A hep107
-#PBS -N mpi_iJet
+#PBS -N mpi_iJet_{0:d}x{1:d}
 #PBS -j oe
 ###PBS -q debug
 #PBS -l walltime=120:00,nodes={0:d}
@@ -43,7 +43,6 @@ aprun -n {0:d} -N 1 python skopt_test_mpi.py --path $OUTDIR --epoch 10000 --kfol
            '--test' if test else ''))
 mpi_file.close()
 
-fdafsd
 current_mpi_job_id = sys.argv[1] if len(sys.argv)>1 else None
 n_submissions = 10
 while n_submissions>0:
